@@ -3,7 +3,7 @@
  */
 import { render } from './app.js';
 export function setupInput(state) {
-    const { program, rows } = state;
+    const { program, inputHandler, rows } = state;
     const viewHeight = rows - 2;
     function clampScroll() {
         const maxScroll = Math.max(0, state.lines.length - viewHeight);
@@ -14,12 +14,13 @@ export function setupInput(state) {
         clampScroll();
         render(state);
     }
-    program.on('key', (event) => {
+    inputHandler.onKey((event) => {
         const { name, ctrl, shift } = event;
         // Quit
         if (name === 'q' ||
             name === 'escape' ||
             (ctrl && name === 'c')) {
+            inputHandler.stop();
             program.destroy();
             process.exit(0);
         }

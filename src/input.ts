@@ -6,7 +6,7 @@ import type { KeyEvent } from 'blecsd/terminal';
 import { type ViewerState, render } from './app.js';
 
 export function setupInput(state: ViewerState): void {
-  const { program, rows } = state;
+  const { program, inputHandler, rows } = state;
   const viewHeight = rows - 2;
 
   function clampScroll(): void {
@@ -20,7 +20,7 @@ export function setupInput(state: ViewerState): void {
     render(state);
   }
 
-  program.on('key', (event: KeyEvent) => {
+  inputHandler.onKey((event: KeyEvent) => {
     const { name, ctrl, shift } = event;
 
     // Quit
@@ -29,6 +29,7 @@ export function setupInput(state: ViewerState): void {
       name === 'escape' ||
       (ctrl && name === 'c')
     ) {
+      inputHandler.stop();
       program.destroy();
       process.exit(0);
     }

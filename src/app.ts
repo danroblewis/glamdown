@@ -4,7 +4,7 @@
  */
 
 import { parseTags, stripTags } from 'blecsd';
-import { createProgram, type Program } from 'blecsd/terminal';
+import { createProgram, createInputHandler, type Program, type InputHandler } from 'blecsd/terminal';
 import { renderMarkdownToMarkup } from './renderer.js';
 import { theme } from './theme.js';
 import { setupInput } from './input.js';
@@ -54,6 +54,7 @@ export interface ViewerState {
   scrollY: number;
   lines: string[];
   program: Program;
+  inputHandler: InputHandler;
   cols: number;
   rows: number;
   filename: string;
@@ -178,27 +179,32 @@ export async function runApp(source: string, filename: string): Promise<void> {
 
   await program.init();
 
+  // 2. Create input handler to read keystrokes from stdin
+  const inputHandler = createInputHandler(program.input);
+  inputHandler.start();
+
   const cols = program.cols;
   const rows = program.rows;
 
-  // 2. Render markdown to tagged markup lines
+  // 3. Render markdown to tagged markup lines
   const contentWidth = Math.max(cols - 2, 20);
   const renderedContent = renderMarkdownToMarkup(source, theme, contentWidth);
   const lines = renderedContent.split('\n');
 
-  // 3. Create viewer state
+  // 4. Create viewer state
   const state: ViewerState = {
     scrollY: 0,
     lines,
     program,
+    inputHandler,
     cols,
     rows,
     filename,
   };
 
-  // 4. Initial render
+  // 5. Initial render
   render(state);
 
-  // 5. Set up input handling
+  // 6. Set up input handling
   setupInput(state);
 }

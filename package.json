@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "tsconfig.json"
   ],
   "bin": {
     "glamdown": "./dist/cli.js"
@@ -11,7 +13,7 @@
   "scripts": {
     "dev": "tsx src/cli.ts",
     "build": "tsc",
-    "prepublishOnly": "tsc"
+    "prepare": "tsc"
   },
   "dependencies": {
     "blecsd": "^0.4.0"

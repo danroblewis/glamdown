@@ -3,7 +3,7 @@
  * Renders content directly to the terminal with manual scrolling.
  */
 import { parseTags, stripTags } from 'blecsd';
-import { createProgram } from 'blecsd/terminal';
+import { createProgram, createInputHandler } from 'blecsd/terminal';
 import { renderMarkdownToMarkup } from './renderer.js';
 import { theme } from './theme.js';
 import { setupInput } from './input.js';
@@ -151,24 +151,28 @@ export async function runApp(source, filename) {
         title: `glamdown — ${filename}`,
     });
     await program.init();
+    // 2. Create input handler to read keystrokes from stdin
+    const inputHandler = createInputHandler(program.input);
+    inputHandler.start();
     const cols = program.cols;
     const rows = program.rows;
-    // 2. Render markdown to tagged markup lines
+    // 3. Render markdown to tagged markup lines
     const contentWidth = Math.max(cols - 2, 20);
     const renderedContent = renderMarkdownToMarkup(source, theme, contentWidth);
     const lines = renderedContent.split('\n');
-    // 3. Create viewer state
+    // 4. Create viewer state
     const state = {
         scrollY: 0,
         lines,
         program,
+        inputHandler,
         cols,
         rows,
         filename,
     };
-    // 4. Initial render
+    // 5. Initial render
     render(state);
-    // 5. Set up input handling
+    // 6. Set up input handling
     setupInput(state);
 }
 //# sourceMappingURL=app.js.map
