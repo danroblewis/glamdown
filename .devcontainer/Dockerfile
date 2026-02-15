@@ -44,6 +44,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxdamage1 \
     libxrandr2 \
     xdg-utils \
+    # Python
+    python3 \
+    python3-pip \
+    python3-venv \
     # Virtual display for headed browser testing
     xvfb \
     xauth \
@@ -98,6 +102,12 @@ ENV CHROME_PATH=/usr/bin/chromium \
 # Copy firewall script
 COPY init-firewall.sh /usr/local/bin/init-firewall.sh
 RUN chmod +x /usr/local/bin/init-firewall.sh
+
+# Install Rust (as node user so it goes in their home dir)
+USER node
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/home/node/.cargo/bin:$PATH"
+USER root
 
 # Default shell
 ENV SHELL=/bin/zsh
