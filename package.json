@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "tsx src/cli.ts",
     "build": "tsc",
-    "prepare": "tsc"
+    "prepublishOnly": "tsc"
   },
   "dependencies": {
     "blecsd": "^0.4.0"
